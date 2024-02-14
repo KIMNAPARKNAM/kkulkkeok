@@ -60,4 +60,10 @@ public class UserController {
         return ResponseEntity.ok().body(new ResponseDto<>("사용 가능한 닉네임 입니다.", 200,null));
     }
 
+
+    @GetMapping("/logout")
+    public ResponseEntity<ResponseDto<Void>> logout(HttpServletResponse response){
+        response.setHeader(JwtUtil.AUTHORIZATION_HEADER,"");
+        return ResponseEntity.ok().body(new ResponseDto<>("로그아웃 되었습니다.",200,null));
+    }
 }
