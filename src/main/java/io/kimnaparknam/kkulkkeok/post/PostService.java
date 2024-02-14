@@ -3,7 +3,6 @@ package io.kimnaparknam.kkulkkeok.post;
 import io.kimnaparknam.kkulkkeok.category.Category;
 import io.kimnaparknam.kkulkkeok.category.CategoryRepository;
 import io.kimnaparknam.kkulkkeok.category.CategoryService;
-import io.kimnaparknam.kkulkkeok.security.UserDetailsImpl;
 import io.kimnaparknam.kkulkkeok.user.User;
 import io.kimnaparknam.kkulkkeok.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,21 +28,21 @@ public class PostService {
     }
 
     //게시글 작성
-    public void createPost(CreatePostRequestDto createPostRequestDto, User user) {
-        Optional<Category> categorycheck = categoryRepository.findByCategoryName(createPostRequestDto.getCategoryName());
+    public void createPost(PostRequestDto postRequestDto, User user) {
+        Optional<Category> categorycheck = categoryRepository.findByCategoryName(postRequestDto.getCategoryName());
         Category category;
         if (categorycheck.isEmpty()) {
-            category = categoryService.createCategory(createPostRequestDto.getCategoryName());
+            category = categoryService.createCategory(postRequestDto.getCategoryName());
         } else {
             category = categorycheck.get();
         }
-        Post post = new Post(createPostRequestDto, category, user);
+        Post post = new Post(postRequestDto, category, user);
         postRepository.save(post);
     }
 
     //게시글 수정
     @Transactional
-    public void modifyPost(Long postId, ModifyPostRequestDto modifyPostRequestDto, User user) {
+    public void modifyPost(Long postId, PostRequestDto modifyPostRequestDto, User user) {
         Post post = postRepository.findById(postId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 포스트 입니다."));
         if(post.getUser().getUserId() != user.getUserId()){
             throw new AuthorizationServiceException("작성자만 수정 권한이 있습니다.");

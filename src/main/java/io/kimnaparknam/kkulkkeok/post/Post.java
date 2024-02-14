@@ -31,21 +31,11 @@ public class Post extends Timestamped{
     @JoinColumn(name = "category_id")
     private Category category;
 
-    public Post (CreatePostRequestDto createPostRequestDto) {
-        this.title = createPostRequestDto.getTitle();
-        this.contents = createPostRequestDto.getContents();
-    }
-
-    public Post(CreatePostRequestDto createPostRequestDto, Category category, User user) {
-        this.title = createPostRequestDto.getTitle();
-        this.contents = createPostRequestDto.getContents();
+    public Post(PostRequestDto postRequestDto, Category category, User user) {
+        this.title = postRequestDto.getTitle();
+        this.contents = postRequestDto.getContents();
         this.user = user;
         this.category = category;
-    }
-
-    public void update(ModifyPostRequestDto modifyPostRequestDto) {
-        this.title = modifyPostRequestDto.getTitle();
-        this.contents = modifyPostRequestDto.getContents();
     }
 }
 
