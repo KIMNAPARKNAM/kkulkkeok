@@ -1,9 +1,13 @@
 package io.kimnaparknam.kkulkkeok.user;
 
+import io.kimnaparknam.kkulkkeok.post.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -26,6 +30,9 @@ public class User {
     private String email;
     @Column(name = "nickname", unique = true, nullable = false)
     private String nickname;
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> postList = new ArrayList<>();
 
     public User(SignupRequestDto signupRequestDto, String encodedPassword){
         this.username = signupRequestDto.getUsername();
