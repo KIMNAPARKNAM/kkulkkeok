@@ -27,4 +27,16 @@ public class UserService {
         User user = new User(signupRequestDto, encodedPassword);
         userRepository.save(user);
     }
+
+    public void checkLoginEmail(String email) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다");
+        }
+    }
+
+    public void checkNickname(String nickname) {
+        if (userRepository.findByNickname(nickname).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 닉네임입니다");
+        }
+    }
 }
