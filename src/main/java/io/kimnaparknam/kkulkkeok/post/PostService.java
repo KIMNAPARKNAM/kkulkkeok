@@ -57,4 +57,10 @@ public class PostService {
         post.setContents(contents);
         post.setCategory(category);
     }
+
+    public List<PostResponseDto> getUserPostList(String nickname) {
+        User targetUser = userRepository.findByNickname(nickname).orElseThrow(()->new IllegalArgumentException("존재하지 않는 유저입니다."));
+        List<Post> userPostList = postRepository.findAllByUser(targetUser);
+        return userPostList.stream().map(PostResponseDto::new).toList();
+    }
 }

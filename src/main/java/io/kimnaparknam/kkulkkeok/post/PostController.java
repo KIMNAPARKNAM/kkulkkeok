@@ -32,9 +32,9 @@ public class PostController {
         try {
             postService.createPost(createPostRequestDto, userDetails.getUser());
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status((HttpStatus.OK)).body(new ResponseDto<>("게시글 작성에 실패했습니다.", HttpStatus.OK.value(), null));
+            return ResponseEntity.status((HttpStatus.BAD_REQUEST)).body(new ResponseDto<>("게시글 작성에 실패했습니다.", HttpStatus.BAD_REQUEST.value(), null));
         }
-        return ResponseEntity.status((HttpStatus.OK)).body(new ResponseDto<>("게시글 작성에 성공했습니다.", HttpStatus.BAD_REQUEST.value(), null));
+        return ResponseEntity.status((HttpStatus.OK)).body(new ResponseDto<>("게시글 작성에 성공했습니다.", HttpStatus.OK.value(), null));
     }
 
     //게시글 수정
@@ -43,8 +43,18 @@ public class PostController {
         try {
             postService.modifyPost(postId, modifyPostRequestDto, userDetails);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status((HttpStatus.OK)).body(new ResponseDto<>("게시글 수정에 실패했습니다.", HttpStatus.OK.value(), null));
+            return ResponseEntity.status((HttpStatus.BAD_REQUEST)).body(new ResponseDto<>("게시글 수정에 실패했습니다.", HttpStatus.BAD_REQUEST.value(), null));
         }
-        return ResponseEntity.status((HttpStatus.OK)).body(new ResponseDto<>("게시글 수정에 성공했습니다.", HttpStatus.BAD_REQUEST.value(), null));
+        return ResponseEntity.status((HttpStatus.OK)).body(new ResponseDto<>("게시글 수정에 성공했습니다.", HttpStatus.OK.value(), null));
+    }
+    @GetMapping("/users/{nickname}")
+    public ResponseEntity<ResponseDto<List<PostResponseDto>>> getUserPostList(@PathVariable(name = "nickname") String nickname){
+        List<PostResponseDto> postResponseDtoList;
+        try{
+            postResponseDtoList = postService.getUserPostList(nickname);
+        }catch(IllegalArgumentException e){
+            return ResponseEntity.status((HttpStatus.BAD_REQUEST)).body(new ResponseDto<>("게시글 조회에 실패했습니다.", HttpStatus.BAD_REQUEST.value(), null));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>("특정 유저 포스팅 목록 조회 완료",HttpStatus.OK.value(), postResponseDtoList));
     }
 }
