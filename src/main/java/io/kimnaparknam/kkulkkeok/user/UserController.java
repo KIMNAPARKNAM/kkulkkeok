@@ -2,12 +2,14 @@ package io.kimnaparknam.kkulkkeok.user;
 
 import io.kimnaparknam.kkulkkeok.common.ResponseDto;
 import io.kimnaparknam.kkulkkeok.security.JwtUtil;
+import io.kimnaparknam.kkulkkeok.security.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -60,6 +62,12 @@ public class UserController {
         return ResponseEntity.ok().body(new ResponseDto<>("사용 가능한 닉네임 입니다.", 200,null));
     }
 
+    @PutMapping("")
+    public ResponseEntity<ResponseDto<Void>> updateUserProfile(@RequestBody @Valid UserRequestDto requestDto,
+                                                               @AuthenticationPrincipal UserDetailsImpl userDetails){
+        userService.updateUserProfile(requestDto, userDetails.getUser());
+        return ResponseEntity.ok().body(new ResponseDto<>(null,200,null));
+    }
 
     @GetMapping("/logout")
     public ResponseEntity<ResponseDto<Void>> logout(HttpServletResponse response){

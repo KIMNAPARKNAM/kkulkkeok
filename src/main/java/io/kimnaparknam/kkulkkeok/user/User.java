@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Table(name = "users")
@@ -33,5 +34,11 @@ public class User {
         this.nickname = signupRequestDto.getNickname();
         this.email = signupRequestDto.getEmail();
         this.password = encodedPassword;
+    }
+
+
+    public void update(String encodedPassword, UserRequestDto requestDto) {
+        this.password= encodedPassword;
+        this.introduction= requestDto.getIntroduction();
     }
 }

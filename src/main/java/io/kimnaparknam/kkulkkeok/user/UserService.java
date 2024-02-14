@@ -3,6 +3,7 @@ package io.kimnaparknam.kkulkkeok.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -38,5 +39,12 @@ public class UserService {
         if (userRepository.findByNickname(nickname).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 닉네임입니다");
         }
+    }
+
+    @Transactional
+    public void updateUserProfile(UserRequestDto requestDto, User user) {
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+        User u = userRepository.findByEmail(user.getEmail()).orElseThrow();
+        u.update(encodedPassword,requestDto);
     }
 }
