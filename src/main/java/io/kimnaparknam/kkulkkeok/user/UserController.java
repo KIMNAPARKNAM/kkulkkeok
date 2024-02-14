@@ -44,7 +44,7 @@ public class UserController {
         try {
             userService.checkLoginEmail(email);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new ResponseDto<>(e.getMessage(), 400,null));
+            return ResponseEntity.badRequest().body(new ResponseDto<>(e.getMessage(), HttpStatus.BAD_REQUEST.value(),null));
         }
         return ResponseEntity.ok().body(new ResponseDto<>("사용 가능한 이메일 입니다.", 200,null));
     }
@@ -55,15 +55,15 @@ public class UserController {
         try {
             userService.checkNickname(nickname);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new ResponseDto<>(e.getMessage(), 400,null));
+            return ResponseEntity.badRequest().body(new ResponseDto<>(e.getMessage(), HttpStatus.BAD_REQUEST.value(),null));
         }
-        return ResponseEntity.ok().body(new ResponseDto<>("사용 가능한 닉네임 입니다.", 200,null));
+        return ResponseEntity.ok().body(new ResponseDto<>("사용 가능한 닉네임 입니다.", HttpStatus.OK.value(),null));
     }
 
 
     @GetMapping("/logout")
     public ResponseEntity<ResponseDto<Void>> logout(HttpServletResponse response){
         response.setHeader(JwtUtil.AUTHORIZATION_HEADER,"");
-        return ResponseEntity.ok().body(new ResponseDto<>("로그아웃 되었습니다.",200,null));
+        return ResponseEntity.ok().body(new ResponseDto<>("로그아웃 되었습니다.",HttpStatus.OK.value(),null));
     }
 }
