@@ -53,7 +53,7 @@ public class PostController {
         try{
             postResponseDtoList = postService.getUserPostList(nickname);
         }catch(IllegalArgumentException e){
-            return ResponseEntity.status((HttpStatus.BAD_REQUEST)).body(new ResponseDto<>("게시글 조회에 실패했습니다.", HttpStatus.BAD_REQUEST.value(), null));
+            return ResponseEntity.status((HttpStatus.BAD_REQUEST)).body(new ResponseDto<>("게시글 조회 실패 : " + e.getMessage(), HttpStatus.BAD_REQUEST.value(), null));
         }
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>("특정 유저 포스팅 목록 조회 완료",HttpStatus.OK.value(), postResponseDtoList));
     }
