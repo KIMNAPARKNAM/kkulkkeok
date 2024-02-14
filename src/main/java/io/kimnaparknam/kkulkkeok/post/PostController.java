@@ -47,6 +47,8 @@ public class PostController {
         }
         return ResponseEntity.status((HttpStatus.OK)).body(new ResponseDto<>("게시글 수정에 성공했습니다.", HttpStatus.OK.value(), null));
     }
+
+    //특정 유저의 모든 게시글 조회
     @GetMapping("/users/{nickname}")
     public ResponseEntity<ResponseDto<List<PostResponseDto>>> getUserPostList(@PathVariable(name = "nickname") String nickname){
         List<PostResponseDto> postResponseDtoList;
@@ -56,5 +58,17 @@ public class PostController {
             return ResponseEntity.status((HttpStatus.BAD_REQUEST)).body(new ResponseDto<>("게시글 조회 실패 : " + e.getMessage(), HttpStatus.BAD_REQUEST.value(), null));
         }
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>("특정 유저 포스팅 목록 조회 완료",HttpStatus.OK.value(), postResponseDtoList));
+    }
+
+    //특정 게시글 조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<ResponseDto<PostResponseDto>> getPost(@PathVariable(name = "postId") Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        PostResponseDto responseDto;
+        try {
+            responseDto = postService.getPost(postId);
+        } catch(IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto<>("게시글 조회 실패 : " + e.getMessage(), HttpStatus.BAD_REQUEST.value(), null));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>("게시글 조회 성공", HttpStatus.OK.value(), responseDto));
     }
 }
