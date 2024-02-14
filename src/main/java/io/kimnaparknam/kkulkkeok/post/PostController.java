@@ -43,7 +43,7 @@ public class PostController {
         try {
             postService.modifyPost(postId, modifyPostRequestDto, userDetails);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status((HttpStatus.BAD_REQUEST)).body(new ResponseDto<>("게시글 수정에 실패했습니다.", HttpStatus.BAD_REQUEST.value(), null));
+            return ResponseEntity.status((HttpStatus.BAD_REQUEST)).body(new ResponseDto<>("게시글 수정 실패 : " + e.getMessage(), HttpStatus.BAD_REQUEST.value(), null));
         }
         return ResponseEntity.status((HttpStatus.OK)).body(new ResponseDto<>("게시글 수정에 성공했습니다.", HttpStatus.OK.value(), null));
     }
