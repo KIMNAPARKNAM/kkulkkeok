@@ -41,7 +41,7 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<ResponseDto<Void>> modifyPost(@PathVariable Long postId, @RequestBody ModifyPostRequestDto modifyPostRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            postService.modifyPost(postId, modifyPostRequestDto, userDetails);
+            postService.modifyPost(postId, modifyPostRequestDto, userDetails.getUser());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status((HttpStatus.BAD_REQUEST)).body(new ResponseDto<>("게시글 수정 실패 : " + e.getMessage(), HttpStatus.BAD_REQUEST.value(), null));
         }
@@ -70,5 +70,15 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto<>("게시글 조회 실패 : " + e.getMessage(), HttpStatus.BAD_REQUEST.value(), null));
         }
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>("게시글 조회 성공", HttpStatus.OK.value(), responseDto));
+    }
+    //특정 게시글 삭제
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ResponseDto<Void>> deletePost(@PathVariable(name = "postId") Long postId,@AuthenticationPrincipal UserDetailsImpl userDetails){
+        try {
+            postService.deletePost(postId, userDetails.getUser());
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto<>("게시글 삭제 실패 : " + e.getMessage(), HttpStatus.BAD_REQUEST.value(), null));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>("게시글 삭제 성공", HttpStatus.OK.value(), null));
     }
 }

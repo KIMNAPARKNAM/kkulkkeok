@@ -8,8 +8,10 @@ import io.kimnaparknam.kkulkkeok.user.User;
 import io.kimnaparknam.kkulkkeok.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +44,12 @@ public class PostService {
 
     //게시글 수정
     @Transactional
-    public void modifyPost(Long postId, ModifyPostRequestDto modifyPostRequestDto, UserDetailsImpl userDetails) {
+    public void modifyPost(Long postId, ModifyPostRequestDto modifyPostRequestDto, User user) {
+        Post post = postRepository.findById(postId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 포스트 입니다."));
+        if(post.getUser().getUserId() != user.getUserId()){
+            throw new AuthorizationServiceException("작성자만 수정 권한이 있습니다.");
+        }
+
         String title = modifyPostRequestDto.getTitle();
         String contents = modifyPostRequestDto.getContents();
         Category category;
@@ -52,7 +59,7 @@ public class PostService {
         } else {
             category = categorycheck.get();
         }
-        Post post = postRepository.findById(postId).orElseThrow(() ->new IllegalArgumentException("해당 포스트는 존재하지 않습니다."));
+
         post.setTitle(title);
         post.setContents(contents);
         post.setCategory(category);
@@ -68,4 +75,13 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 포스트입니다."));
         return new PostResponseDto(post);
     }
+
+    public void deletePost(Long postId, User user) {
+        Post post = postRepository.findById(postId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 포스트 입니다."));
+        if(post.getUser().getUserId() != user.getUserId()){
+            throw new AuthorizationServiceException("작성자만 삭제 권한이 있습니다.");
+        }
+        postRepository.delete(post);
+    }
+
 }
