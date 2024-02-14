@@ -63,4 +63,9 @@ public class PostService {
         List<Post> userPostList = postRepository.findAllByUser(targetUser);
         return userPostList.stream().map(PostResponseDto::new).toList();
     }
+
+    public PostResponseDto getPost(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 포스트입니다."));
+        return new PostResponseDto(post);
+    }
 }
