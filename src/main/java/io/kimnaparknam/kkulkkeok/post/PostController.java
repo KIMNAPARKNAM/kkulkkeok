@@ -20,7 +20,7 @@ public class PostController {
     }
 
     //게시글 리스트 조회
-    @GetMapping("")
+    @GetMapping("/p")
     public ResponseEntity<ResponseDto<List<PostResponseDto>>> getPostList() {
         List<PostResponseDto> dto = postService.getPostList();
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto<>("", HttpStatus.OK.value(), dto));
@@ -29,9 +29,9 @@ public class PostController {
 
     //게시글 작성
     @PostMapping("")
-    public ResponseEntity<ResponseDto<Void>> createPost(@RequestBody CreatePostRequestDto createPostRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<ResponseDto<Void>> createPost(@RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            postService.createPost(createPostRequestDto, userDetails.getUser());
+            postService.createPost(postRequestDto, userDetails.getUser());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status((HttpStatus.BAD_REQUEST)).body(new ResponseDto<>("게시글 작성에 실패했습니다.", HttpStatus.BAD_REQUEST.value(), null));
         }
@@ -40,7 +40,7 @@ public class PostController {
 
     //게시글 수정
     @PutMapping("/{postId}")
-    public ResponseEntity<ResponseDto<Void>> modifyPost(@PathVariable Long postId, @RequestBody ModifyPostRequestDto modifyPostRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<ResponseDto<Void>> modifyPost(@PathVariable Long postId, @RequestBody PostRequestDto modifyPostRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
             postService.modifyPost(postId, modifyPostRequestDto, userDetails.getUser());
         } catch (IllegalArgumentException | AuthorizationServiceException e) {
@@ -50,7 +50,7 @@ public class PostController {
     }
 
     //특정 유저의 모든 게시글 조회
-    @GetMapping("/users/{nickname}")
+    @GetMapping("/p/users/{nickname}")
     public ResponseEntity<ResponseDto<List<PostResponseDto>>> getUserPostList(@PathVariable(name = "nickname") String nickname){
         List<PostResponseDto> postResponseDtoList;
         try{
@@ -62,8 +62,8 @@ public class PostController {
     }
 
     //특정 게시글 조회
-    @GetMapping("/{postId}")
-    public ResponseEntity<ResponseDto<PostResponseDto>> getPost(@PathVariable(name = "postId") Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    @GetMapping("/p/{postId}")
+    public ResponseEntity<ResponseDto<PostResponseDto>> getPost(@PathVariable(name = "postId") Long postId){
         PostResponseDto responseDto;
         try {
             responseDto = postService.getPost(postId);
